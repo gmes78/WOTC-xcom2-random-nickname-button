@@ -18,13 +18,16 @@
     <Folder Include="Src\RandomFirstNickLastNameButtonMod\Classes\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config\XComRandomFirstNickLastNameButtonMod.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ReadMe.txt" />
     <Content Include="ModPreview.jpg" />
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
     <Content Include="Config\XComGame.ini" />
     <Content Include="Localization\XComGame.int" />
-    <Content Include="Src\RandomFirstNickLastNameButtonMod\Classes\Customize_Info_Listener.uc">
+    <Content Include="Src\RandomFirstNickLastNameButtonMod\Classes\RandomNicknameButton.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>
