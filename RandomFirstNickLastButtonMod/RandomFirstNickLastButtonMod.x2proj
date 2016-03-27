@@ -24,7 +24,7 @@
     <Content Include="Config\XComEngine.ini" />
     <Content Include="Config\XComGame.ini" />
     <Content Include="Localization\XComGame.int" />
-    <Content Include="Src\RandomFirstNickLastNameButtonMod\Classes\Customize_Info_Listener.uc">
+    <Content Include="Src\RandomFirstNickLastNameButtonMod\Classes\RandomNicknameButton.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>
