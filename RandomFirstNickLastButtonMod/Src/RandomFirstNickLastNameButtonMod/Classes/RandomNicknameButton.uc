@@ -69,17 +69,46 @@ var UICustomize_Info			CustomizeInfoScreen;
 var XGCharacterGenerator 		CharacterGenerator;
 var XComGameState_Unit       	Unit;
 
+var UIPanel						RandomButtonBG;
+var UIText						RandomButtonTitle;
+
 var UIButton 					RandomFirstnameButton;
 var UIButton 					RandomNicknameButton;
 var UIButton 					RandomLastnameButton;
 var UIButton					RandomCountryButton;
 var UIButton					RandomBioButton;
 
-// If there's a way to have the system autogen these, I haven't found it yet.
-const BUTTON_FONT_SIZE	=	26;
-const BUTTON_HEIGHT		=   36;
-//const BUTTON_WIDTH		=	270;		// Doesn't seem to take? And it looks fine auto.
-const BUTTON_SPACING	=	4;
+
+const BUTTON_FONT_SIZE			=	26;
+const BUTTON_HEIGHT				=   36;
+const BUTTON_SPACING			=	4;
+
+/*
+	Here's my disappointing hack to try and finally make the buttons
+	look reasonable. No matter what I do I can't get .SetWidth() or
+	.SetSize() to affect the width of the buttons at all. There aren't
+	many examples of them being used in the code, but the few that do
+	exist do what you'd expect: they just call .SetSize or .SetWidth
+	with values and presumably get results.
+
+	Anyway, what I'm doing here is appending whitespace to the label
+	text to force the auto-width setting to do my bidding, or as close
+	as possible. It's not consistent and I'm worried it'll not carry
+	across screen modes. I tested a few and in some cases the buttons
+	appear pretty displaced from where I'd expect them, still visible
+	but no longer aesthetically pleasing.
+
+	I'll add config options to move the panel around.
+
+	Still, it's nice to have buttons that are the same width(ish)
+	finally.
+*/
+
+const FIRSTNAME_BUTTON_LABEL	= "Random First Name";
+const LASTNAME_BUTTON_LABEL		= "Random Last Name";
+const NICKNAME_BUTTON_LABEL		= "Random Nickname ";
+const COUNTRY_BUTTON_LABEL		= "Random Country    ";
+const BIO_BUTTON_LABEL			= "Random Bio           ";
 
 // Button callback delegate
 delegate OnClickedDelegate(UIButton Button);
@@ -101,20 +130,19 @@ simulated function InitUI()
 	local string					strNicknameButtonTooltip;	
 
 	AnchorPos = class'UIUtilities'.const.ANCHOR_TOP_RIGHT;
-	
-	RandomFirstnameButton	= CreateButton('randomFirstnameButton', "Random First Name",	OnRandomFirstnameButtonPress,	AnchorPos, -250, 250);
-	RandomLastnameButton	= CreateButton('randomLastnameButton',	"Random Last Name",		OnRandomLastnameButtonPress,	AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomFirstnameButton));
+
+	RandomFirstnameButton	= CreateButton('randomFirstnameButton', FIRSTNAME_BUTTON_LABEL,	OnRandomFirstnameButtonPress,	AnchorPos, -250, 250);
+	RandomLastnameButton	= CreateButton('randomLastnameButton',	LASTNAME_BUTTON_LABEL,	OnRandomLastnameButtonPress,	AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomFirstnameButton));
 	
 	NicknameButtonLabelAndTooltip(strNicknameButtonLabel, strNicknameButtonTooltip);
 	RandomNicknameButton	= CreateButton('randomNicknameButton',	strNicknameButtonLabel,	OnRandomNicknameButtonPress,	AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomLastnameButton));
 	DisableNicknameButtonIfRequired(strNicknameButtonTooltip);
 
-	RandomCountryButton		= CreateButton('randomCountryButton',	"Random Country",		OnRandomCountryButtonPress,		AnchorPos, RandomFirstnameButton.X,	ButtonVertOffsetFrom(RandomNicknameButton));
-	RandomBioButton			= CreateButton('randomBiographyButton', "Random Bio",			OnRandomBioButtonPress,			AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomCountryButton));
-	//RandomBioButton			= CreateButton('randomBioButton', class'UIUtilities_Text'.static.AlignLeft("Random Biography"), OnRandomBioButtonPress,  AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomCountryButton));
+	RandomCountryButton		= CreateButton('randomCountryButton',	COUNTRY_BUTTON_LABEL,	OnRandomCountryButtonPress,		AnchorPos, RandomFirstnameButton.X,	ButtonVertOffsetFrom(RandomNicknameButton));
+	RandomBioButton			= CreateButton('randomBiographyButton', BIO_BUTTON_LABEL,		OnRandomBioButtonPress,			AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomCountryButton));
 }
 
-simulated function int ButtonVertOffsetFrom(UIButton uiButton)
+simulated function int ButtonVertOffsetFrom(const out UIButton uiButton)
 {
 	return uiButton.Y + uiButton.Height + BUTTON_SPACING;
 }
@@ -123,18 +151,18 @@ simulated function NicknameButtonLabelAndTooltip(out string strLabel, out string
 {
 	if (Unit.bIsSuperSoldier)
 	{
-		strLabel	= class'UIUtilities_Text'.static.GetColoredText("Random Nickname", eUIState_Disabled);
+		strLabel	= class'UIUtilities_Text'.static.GetColoredText(NICKNAME_BUTTON_LABEL, eUIState_Disabled);
 		strTooltip	= "Unit is a super soldier.";
 	}
 	else if (!Unit.IsVeteran() && !InShell())
 	{
-		strLabel	= class'UIUtilities_Text'.static.GetColoredText("Random Nickname", eUIState_Disabled);
+		strLabel	= class'UIUtilities_Text'.static.GetColoredText(NICKNAME_BUTTON_LABEL, eUIState_Disabled);
 		strTooltip	= "Rank is too low.";
 	} else if (Unit.GetSoldierClassTemplateName() == 'Rookie') {
-		strLabel	= class'UIUtilities_Text'.static.GetColoredText("Random Nickname", eUIState_Disabled);
+		strLabel	= class'UIUtilities_Text'.static.GetColoredText(NICKNAME_BUTTON_LABEL, eUIState_Disabled);
 		strTooltip	= "Can't generate nicknames for Rookies.";
 	} else {
-		strLabel	= class'UIUtilities_Text'.static.GetColoredText("Random Nickname", eUIState_Normal);
+		strLabel	= class'UIUtilities_Text'.static.GetColoredText(NICKNAME_BUTTON_LABEL, eUIState_Normal);
 		// No tooltip for default case
 	}
 }
@@ -165,17 +193,36 @@ simulated function DisableNicknameButtonIfRequired(const out string strTooltip)
 }
 
 simulated function UIButton CreateButton(name nmName, string strLabel, delegate<OnClickedDelegate> OnClickCallThis, 
-										 int AnchorPos, int XOffset, int YOffset)
+										 int AnchorPos, int XOffset, int YOffset, optional int Width = -1)
 {
-	local UIButton Button;
+	local UIButton	uiButton;
+	local string	strLeftAlignedLabel;
 
-	Button = CustomizeInfoScreen.Spawn(class'UIButton', CustomizeInfoScreen);
-	Button.InitButton(nmName, class'UIUtilities_Text'.static.GetSizedText(strLabel, BUTTON_FONT_SIZE), OnClickCallThis);
-	Button.SetAnchor(AnchorPos);
-	Button.SetPosition(XOffset, YOffset);			// relative to anchor, per other SetPos call comments I've seen.
-	Button.SetSize(Button.Width, BUTTON_HEIGHT);	// TODO. necessary?
+	// TODO figure out verticle align; the customize menu buttons all do it, but how?
 	
-	return Button;
+
+	uiButton = CustomizeInfoScreen.Spawn(class'UIButton', CustomizeInfoScreen);
+	uiButton.InitButton(nmName, , OnClickCallThis);
+	uiButton.SetAnchor(AnchorPos);
+	uiButton.SetPosition(XOffset, YOffset);			// relative to anchor, per other SetPos call comments I've seen.
+
+	//strLeftAlignedLabel = "<table><tr><td align='center' valign='middle' height=" $ uiButton.Height $ " width=" $ uiButton.Width $ ">" $ strLabel $ "</td></tr></table>";
+	//uiButton.SetHTMLText(class'UIUtilities_Text'.static.GetSizedText(strLeftAlignedLabel, BUTTON_FONT_SIZE));
+
+	//uiButton.SetText(strLabel); // works, smallish text
+	uiButton.SetText("<p align='LEFT'>" $ strLabel $ "</p>");
+	
+
+	/*
+		For some reason, setting Width never seems to have any effect, at least
+		not visibly; setting height does though. This is via the UIPanel
+		inherited function.
+	*/
+	//uiButton.SetSize(uiButton.Width, BUTTON_HEIGHT);
+
+	//uiButton = UIButton(uiButton.SetSize(BUTTON_WIDTH, BUTTON_HEIGHT));
+	
+	return uiButton;
 }
 
 simulated function OnRandomFirstnameButtonPress(UIButton Button)
