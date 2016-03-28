@@ -195,31 +195,21 @@ simulated function UIButton CreateButton(name nmName, string strLabel, delegate<
 										 int AnchorPos, int XOffset, int YOffset, optional int Width = -1)
 {
 	local UIButton	uiButton;
-	local string	strLeftAlignedLabel;
-
-	// TODO figure out verticle align; the customize menu buttons all do it, but how?
-	
 
 	uiButton = CustomizeInfoScreen.Spawn(class'UIButton', CustomizeInfoScreen);
 	uiButton.InitButton(nmName, , OnClickCallThis);
 	uiButton.SetAnchor(AnchorPos);
-	uiButton.SetPosition(XOffset, YOffset);			// relative to anchor, per other SetPos call comments I've seen.
-
-	//strLeftAlignedLabel = "<table><tr><td align='center' valign='middle' height=" $ uiButton.Height $ " width=" $ uiButton.Width $ ">" $ strLabel $ "</td></tr></table>";
-	//uiButton.SetHTMLText(class'UIUtilities_Text'.static.GetSizedText(strLeftAlignedLabel, BUTTON_FONT_SIZE));
-
-	//uiButton.SetText(strLabel); // works, smallish text
-	uiButton.SetText("<p align='LEFT'>" $ strLabel $ "</p>");
-	
 
 	/*
-		For some reason, setting Width never seems to have any effect, at least
-		not visibly; setting height does though. This is via the UIPanel
-		inherited function.
+		SetPos is relative to the anchor, not the true origin.
+		SetText uses some subset of HTML formatting which I
+		don't know the whole of, but I did try creating a table
+		and using CSS style embeds to get better control over
+		the text, to no avail.
 	*/
-	//uiButton.SetSize(uiButton.Width, BUTTON_HEIGHT);
 
-	//uiButton = UIButton(uiButton.SetSize(BUTTON_WIDTH, BUTTON_HEIGHT));
+	uiButton.SetPosition(XOffset, YOffset);
+	uiButton.SetText("<p align='LEFT'>" $ strLabel $ "</p>");
 	
 	return uiButton;
 }
