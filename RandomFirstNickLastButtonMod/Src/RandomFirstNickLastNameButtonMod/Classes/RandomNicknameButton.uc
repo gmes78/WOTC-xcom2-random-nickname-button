@@ -116,10 +116,23 @@ event OnInit(UIScreen Screen)
 {
 	CharacterGenerator	= `XCOMGAME.Spawn( class 'XGCharacterGenerator' );
 	CustomizeInfoScreen	= UICustomize_Info(Screen);
-	Unit				= GetUnit();
+	RefreshUnit();
 
 	InitUI();
 }
+
+simulated function OnReceiveFocus(UIScreen Screen)
+{
+        `log("RandomNicknameButton.OnReceiveFocus");
+
+		RefreshUnit();
+}
+
+simulated function OnLoseFocus(UIScreen Screen)
+{
+        `log("RandomNicknameButton.OnLoseFocus");
+}
+
 
 simulated function InitUI()
 {
@@ -386,6 +399,11 @@ simulated function ForceCustomizationMenuRefresh()
 simulated function XComGameState_Unit GetUnit()
 {
 	return CustomizeInfoScreen.Movie.Pres.GetCustomizationUnit();
+}
+
+simulated function RefreshUnit()
+{
+	Unit = GetUnit();
 }
 
 simulated function bool InShell()
