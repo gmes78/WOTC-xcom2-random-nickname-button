@@ -116,10 +116,37 @@ event OnInit(UIScreen Screen)
 {
 	CharacterGenerator	= `XCOMGAME.Spawn( class 'XGCharacterGenerator' );
 	CustomizeInfoScreen	= UICustomize_Info(Screen);
-	Unit				= GetUnit();
+	RefreshUnit();
 
 	InitUI();
 }
+
+simulated function OnReceiveFocus(UIScreen Screen)
+{
+	/*
+		Previously, the Unit was only set in the OnInit event; the result
+		was that using the < and > buttons in the Armory proper (in-game)
+		would result in an embarrassing bug: the mod wouldn't refresh
+		the Unit upon these button presses and thus would bring that
+		soldier back in, superimposed awkwardly over the one that the
+		user was actually viewing.
+
+		The < and > buttons (bottom middle) in the armory proper (in-game)
+		cause OnReceiveFocus events to proc here, so refreshing here
+		solves the problem.
+	*/
+
+        `log("RandomNicknameButton.OnReceiveFocus");
+		`log(" --> Resetting the stored Unit.");
+
+		RefreshUnit();
+}
+
+simulated function OnLoseFocus(UIScreen Screen)
+{
+        `log("RandomNicknameButton.OnLoseFocus");
+}
+
 
 simulated function InitUI()
 {
@@ -386,6 +413,11 @@ simulated function ForceCustomizationMenuRefresh()
 simulated function XComGameState_Unit GetUnit()
 {
 	return CustomizeInfoScreen.Movie.Pres.GetCustomizationUnit();
+}
+
+simulated function RefreshUnit()
+{
+	Unit = GetUnit();
 }
 
 simulated function bool InShell()
