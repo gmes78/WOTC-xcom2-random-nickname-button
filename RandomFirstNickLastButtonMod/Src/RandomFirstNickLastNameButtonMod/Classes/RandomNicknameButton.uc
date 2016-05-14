@@ -123,7 +123,21 @@ event OnInit(UIScreen Screen)
 
 simulated function OnReceiveFocus(UIScreen Screen)
 {
+	/*
+		Previously, the Unit was only set in the OnInit event; the result
+		was that using the < and > buttons in the Armory proper (in-game)
+		would result in an embarrassing bug: the mod wouldn't refresh
+		the Unit upon these button presses and thus would bring that
+		soldier back in, superimposed awkwardly over the one that the
+		user was actually viewing.
+
+		The < and > buttons (bottom middle) in the armory proper (in-game)
+		cause OnReceiveFocus events to proc here, so refreshing here
+		solves the problem.
+	*/
+
         `log("RandomNicknameButton.OnReceiveFocus");
+		`log(" --> Resetting the stored Unit.");
 
 		RefreshUnit();
 }
