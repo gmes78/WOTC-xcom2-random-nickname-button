@@ -82,6 +82,10 @@ const BUTTON_HEIGHT				=   36;
 const BUTTON_SPACING			=	3;
 
 /*
+	SUMMARY: The weird spacing in these strings IS ON PURPOSE.
+
+	DETAILS FOLLOW.
+
 	Here's my disappointing hack to try and finally make the buttons
 	look reasonable. No matter what I do I can't get .SetWidth() or
 	.SetSize() to affect the width of the buttons at all. There aren't
@@ -121,7 +125,7 @@ event OnInit(UIScreen Screen)
 	InitUI();
 }
 
-simulated function OnReceiveFocus(UIScreen Screen)
+event OnReceiveFocus(UIScreen Screen)
 {
 	/*
 		Previously, the Unit was only set in the OnInit event; the result
@@ -142,7 +146,7 @@ simulated function OnReceiveFocus(UIScreen Screen)
 		RefreshUnit();
 }
 
-simulated function OnLoseFocus(UIScreen Screen)
+event OnLoseFocus(UIScreen Screen)
 {
         `log("RandomNicknameButton.OnLoseFocus");
 }
