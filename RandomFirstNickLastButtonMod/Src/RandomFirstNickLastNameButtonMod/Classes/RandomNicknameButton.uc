@@ -82,6 +82,10 @@ const BUTTON_HEIGHT				=   36;
 const BUTTON_SPACING			=	3;
 
 /*
+	SUMMARY: The weird spacing in these strings IS ON PURPOSE.
+
+	DETAILS FOLLOW.
+
 	Here's my disappointing hack to try and finally make the buttons
 	look reasonable. No matter what I do I can't get .SetWidth() or
 	.SetSize() to affect the width of the buttons at all. There aren't
@@ -121,7 +125,18 @@ event OnInit(UIScreen Screen)
 	InitUI();
 }
 
-simulated function OnReceiveFocus(UIScreen Screen)
+/*
+	A NOTE ON EVENT VS. SIMULATED FUNCTION.
+
+	I set these two functions as 'simulated function' as an accident
+	and made a discovery. They seem to work either way, but when I
+	tag them as events, there are bouts of slowdown upon clicks on
+	my buttons.
+
+	No idea why.
+*/
+
+simulated function /*event*/ OnReceiveFocus(UIScreen Screen)
 {
 	/*
 		Previously, the Unit was only set in the OnInit event; the result
@@ -136,17 +151,44 @@ simulated function OnReceiveFocus(UIScreen Screen)
 		solves the problem.
 	*/
 
-        `log("RandomNicknameButton.OnReceiveFocus");
+        BigLog("RandomNicknameButton.OnReceiveFocus");
 		`log(" --> Resetting the stored Unit.");
 
 		RefreshUnit();
 }
 
-simulated function OnLoseFocus(UIScreen Screen)
+simulated function /*event*/ OnLoseFocus(UIScreen Screen)
 {
-        `log("RandomNicknameButton.OnLoseFocus");
+        BigLog("RandomNicknameButton.OnLoseFocus");
 }
 
+event OnRemoved(UIScreen Screen)
+{
+	/*
+		Asset cleanup; this should only trigger once the player
+		leaves the Armory or Character Pool. (*Should*.)
+	*/
+	BigLog("RandomNicknameButton.OnRemoved() -> CLEANING UP.");
+
+	CustomizeInfoScreen.Destroy();
+	CharacterGenerator.Destroy();
+	
+	/*
+		Every example I've seen of XComCharacterGenerators being
+		created seems to lack any kind of explicit cleanup for the
+		character generator.
+	*/
+	//Unit.Destroy();
+
+	RandomButtonBG.Destroy();
+	RandomButtonTitle.Destroy();
+
+	RandomFirstnameButton.Destroy();
+	RandomNicknameButton.Destroy();
+	RandomLastnameButton.Destroy();
+	RandomCountryButton.Destroy();
+	RandomBioButton.Destroy();
+}
 
 simulated function InitUI()
 {
@@ -429,6 +471,24 @@ simulated function bool InShell()
 
 	return XComShellPresentationLayer(CustomizeInfoScreen.Movie.Pres) != none;
 }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+	Some utility code to make my life easier.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+ simulated function BigLog(string logEntry)
+ {
+	`log("* * * * * * * * * * * * * * * * * *");
+	`log("");
+	`log(logEntry);
+	`log("");
+	`log("* * * * * * * * * * * * * * * * * *");
+ }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 defaultproperties
 {
