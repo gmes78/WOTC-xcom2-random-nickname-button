@@ -125,7 +125,18 @@ event OnInit(UIScreen Screen)
 	InitUI();
 }
 
-event OnReceiveFocus(UIScreen Screen)
+/*
+	A NOTE ON EVENT VS. SIMULATED FUNCTION.
+
+	I set these two functions as 'simulated function' as an accident
+	and made a discovery. They seem to work either way, but when I
+	tag them as events, there are bouts of slowdown upon clicks on
+	my buttons.
+
+	No idea why.
+*/
+
+simulated function /*event*/ OnReceiveFocus(UIScreen Screen)
 {
 	/*
 		Previously, the Unit was only set in the OnInit event; the result
@@ -146,11 +157,38 @@ event OnReceiveFocus(UIScreen Screen)
 		RefreshUnit();
 }
 
-event OnLoseFocus(UIScreen Screen)
+simulated function /*event*/ OnLoseFocus(UIScreen Screen)
 {
         `log("RandomNicknameButton.OnLoseFocus");
 }
 
+event OnRemoved(UIScreen Screen)
+{
+	/*
+		Asset cleanup; this should only trigger once the player
+		leaves the Armory or Character Pool. (*Should*.)
+	*/
+	`log("RandomNicknameButton.OnRemoved() -> CLEANING UP.");
+
+	CustomizeInfoScreen.Destroy();
+	CharacterGenerator.Destroy();
+	
+	/*
+		Every example I've seen of XComCharacterGenerators being
+		created seems to lack any kind of explicit cleanup for the
+		character generator.
+	*/
+	//Unit.Destroy();
+
+	RandomButtonBG.Destroy();
+	RandomButtonTitle.Destroy();
+
+	RandomFirstnameButton.Destroy();
+	RandomNicknameButton.Destroy();
+	RandomLastnameButton.Destroy();
+	RandomCountryButton.Destroy();
+	RandomBioButton.Destroy();
+}
 
 simulated function InitUI()
 {
