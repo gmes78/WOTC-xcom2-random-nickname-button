@@ -151,7 +151,7 @@ simulated function /*event*/ OnReceiveFocus(UIScreen Screen)
 		solves the problem.
 	*/
 
-        `log("RandomNicknameButton.OnReceiveFocus");
+        BigLog("RandomNicknameButton.OnReceiveFocus");
 		`log(" --> Resetting the stored Unit.");
 
 		RefreshUnit();
@@ -159,7 +159,7 @@ simulated function /*event*/ OnReceiveFocus(UIScreen Screen)
 
 simulated function /*event*/ OnLoseFocus(UIScreen Screen)
 {
-        `log("RandomNicknameButton.OnLoseFocus");
+        BigLog("RandomNicknameButton.OnLoseFocus");
 }
 
 event OnRemoved(UIScreen Screen)
@@ -168,7 +168,7 @@ event OnRemoved(UIScreen Screen)
 		Asset cleanup; this should only trigger once the player
 		leaves the Armory or Character Pool. (*Should*.)
 	*/
-	`log("RandomNicknameButton.OnRemoved() -> CLEANING UP.");
+	BigLog("RandomNicknameButton.OnRemoved() -> CLEANING UP.");
 
 	CustomizeInfoScreen.Destroy();
 	CharacterGenerator.Destroy();
@@ -471,6 +471,24 @@ simulated function bool InShell()
 
 	return XComShellPresentationLayer(CustomizeInfoScreen.Movie.Pres) != none;
 }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+	Some utility code to make my life easier.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+ simulated function BigLog(string logEntry)
+ {
+	`log("* * * * * * * * * * * * * * * * * *");
+	`log("");
+	`log(logEntry);
+	`log("");
+	`log("* * * * * * * * * * * * * * * * * *");
+ }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 defaultproperties
 {
