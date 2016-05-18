@@ -7,8 +7,9 @@
 
 	BUGS.
 
-	* (FIXED? TESTING) After my forced refresh, the character's forced "by the book" pose is lost, which is most
+	* (FIXED) After my forced refresh, the character's forced "by the book" pose is lost, which is most
 		apparent when the character is wounded (they'll slump suddenly).
+		* I was making an unnecessary call that was causing the problem. I was young.
 		
 	* (FIXED*) The label on the Random Bio button isn't left justified as all the other buttons are; no idea
 		why. :\
@@ -358,6 +359,11 @@ simulated function OnRandomLastnameButtonPress(UIButton button)
 	CharacterGenerator.GenerateName(Unit.kAppearance.iGender, Unit.GetCountry(), strNewFirstname, strNewLastname, Unit.kAppearance.iRace);
 	
 	Unit.SetUnitName(strFirstname, strNewLastname, strNickname);
+
+	/*
+		Currently, last names aren't reflected in bios but no reason they couldn't be
+		one day.
+	*/
 	UpdateCharacterBio(strLastname, strNewLastname);
 	ForceCustomizationMenuRefresh();
 }
@@ -442,9 +448,9 @@ simulated function ForceCustomizationMenuRefresh()
 	*/
 
 	CustomizeInfoScreen.Header.PopulateData(Unit);
-	CustomizeInfoScreen.UpdateData();							// hopefully force update on stock button labels themselves
-	CustomizeInfoScreen.CustomizeManager.Refresh(Unit, Unit);	// bit of a hack
+	CustomizeInfoScreen.UpdateData();				// gets the country button label
 }
+
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
