@@ -441,9 +441,52 @@ simulated function ForceCustomizationMenuRefresh()
 		combined with the refresh call, calling PopulateData does the trick.
 	*/
 
+	// tried here
 	CustomizeInfoScreen.Header.PopulateData(Unit);
 	CustomizeInfoScreen.UpdateData();							// hopefully force update on stock button labels themselves
-	CustomizeInfoScreen.CustomizeManager.Refresh(Unit, Unit);	// bit of a hack
+
+	// Looks like all this stuff below is unnecessary. The .Refresh() call is what screws
+	// up the stance, and the call isn't required for the purpose I thought it filled.
+
+	//ResetSoldierIdleStance();									// gets its own function due to the size of its comment
+	//CustomizeInfoScreen.CustomizeManager.Refresh(Unit, Unit);	// bit of a hack	
+
+	//CustomizeInfoScreen.CustomizeManager.UpdateCamera();
+}
+
+simulated function ResetSoldierIdleStance()
+{
+	/*
+		Calls to the UpdateData functions (when I force an update to reflect data changes) result
+		in the soldier's By the Book Stance override being lost, which results in them - worst case
+		- slumping down if they're wounded in the Customize Info Screen. This bug's very minor, but
+		I finally think I know how to fix it.
+
+		CustomizeInfoScreen is UICustomize_Info, which extends UICustomize, which has member CustomizeManager.
+		CustomizeManger is XComCharacterCustomization, which has member ActorPawn, of base UE3 type Actor.
+
+		UICustomize uses this type to do this (along with their comment):
+			
+			// Play the "By The Book" idle to minimize character overlap with UI elements
+			XComHumanPawn(CustomizeManager.ActorPawn).PlayHQIdleAnim(IdleAnimName);
+
+		which *looks* like a cast. In fact, the XComHumanPawn class has member function
+		PlayHQIdleAnim(). Seems promising.
+
+		The desired value for IdleAnimName is this (thanks, grep):
+
+			X2StrategyElement_DefaultSoldierPersonalities.uc:24:    Template.IdleAnimName = 'Idle_ByTheBook_TG02';
+
+		And it looks like I can get it via the Unit:
+
+			IdleAnimName = Unit.GetPersonalityTemplate().IdleAnimName;
+	*/
+	
+	local name	IdleAnimName;
+
+	IdleAnimName = Unit.GetPersonalityTemplate().IdleAnimName;
+	XComHumanPawn(CustomizeInfoScreen.CustomizeManager.ActorPawn).PlayHQIdleAnim(IdleAnimName);
+	
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
