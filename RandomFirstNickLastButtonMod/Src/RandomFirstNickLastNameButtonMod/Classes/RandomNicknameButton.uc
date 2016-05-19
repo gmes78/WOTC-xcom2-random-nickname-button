@@ -374,23 +374,38 @@ simulated function OnRandomCountryButtonPress(UIButton Button)
 	local name						newCountry;
 	local string					strNewCountry;
 
+	local bool						bValidCountry;
+
 	/*
 		XGCharacterGenerator has member PickOriginCountry() which returns a UE3 Name, the single quote kind.
-
 		Country looks to be stored in kSoldier (TSoldier) private member of XGCharacterGenerator.
-
 		XComGameState_Unit has members SetCountry and GetCountry.
-
 		Easy peasy.
+
+		NOTE. Sometimes mods that add countries aren't removed cleanly, which
+		seems to cause crash for users when they hit this button.
 	*/
 
-	strOldCountry = Unit.GetCountryTemplate().DisplayName;
+	if (Unit.GetCountryTemplate() != none)
+	{
+		strOldCountry = Unit.GetCountryTemplate().DisplayName;
+
+		if (Len(strOldCountry) < 1)
+			bValidCountry = false;
+		else
+			bValidCountry = true;
+
+	} else {
+		bValidCountry = false;
+	}
 
 	newCountry = CharacterGenerator.PickOriginCountry();
 	Unit.SetCountry(newCountry);
 	strNewCountry = Unit.GetCountryTemplate().DisplayName;
 
-	UpdateCharacterBio(strOldCountry, strNewCountry);
+	if (bValidCountry)
+		UpdateCharacterBio(strOldCountry, strNewCountry);
+
 	ForceCustomizationMenuRefresh();
 }
 
