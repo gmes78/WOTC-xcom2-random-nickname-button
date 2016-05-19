@@ -384,6 +384,14 @@ simulated function OnRandomCountryButtonPress(UIButton Button)
 
 		NOTE. Sometimes mods that add countries aren't removed cleanly, which
 		seems to cause crash for users when they hit this button.
+
+		Two things could be the case:
+			the country template is coming back none
+		OR	the country name is empty (or weird).
+
+		I can't check it for corruption, but hopefully that's not the issue.
+
+		(If it is, I can't do anything about this.)
 	*/
 
 	if (Unit.GetCountryTemplate() != none)
