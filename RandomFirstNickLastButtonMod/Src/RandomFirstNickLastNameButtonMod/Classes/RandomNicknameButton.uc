@@ -10,7 +10,7 @@
 	* (FIXED) After my forced refresh, the character's forced "by the book" pose is lost, which is most
 		apparent when the character is wounded (they'll slump suddenly).
 		* I was making an unnecessary call that was causing the problem. I was young.
-		
+
 	* (FIXED*) The label on the Random Bio button isn't left justified as all the other buttons are; no idea
 		why. :\
 		* It's now left justified but the button's too wide, which is annoying. But it does look better, if
@@ -37,18 +37,18 @@
 	* (FIXED) Bio updates (upon new name/country) end up adding a new (and second) birthday/country of origin header;
 		i.e. we end up with TWO headers to a given bio which is attrocious. OH it must not expect anybody to
 		enter that, so I just need to not ship the first three lines of the old bio to the set bio call.
-	
-	* (FIXED) Random Country doesn't change the button, but DOES change the flag (in the header).		
-		
+
+	* (FIXED) Random Country doesn't change the button, but DOES change the flag (in the header).
+
 	WORRIES
-	
+
 	* (FIXED) I'm a bit worried that instantiating an XGCharacterGenerator each time OnInit is a memory leak; only because
 		I'm not sure how cleanup works (or if I have to worry about it). I SUSPECT THIS AUTOCLEANS UP as it's
 		a local specified variable, but not 100% (99.9%)
-		
+
 	* (FIXED) Clicking "Random Nickname" prior to the character being a supersoldier will result in clearing the nickname.
 		I either need to ignore that (with a custom nickname generator) OR disable the button prior to supersoldier
-		
+
 	* (FIXED) The Bio has the first name of the soldier in it; do I want to (can I?) regen it (the same one) with the new name/info?
 		* No, looks like it's hidden out of view? Or if it's in the code, I can't see it.
 		* Only references I see to the character bio are in UICustomize_Info, where it's set via UIMCController (a low level
@@ -173,13 +173,16 @@ event OnRemoved(UIScreen Screen)
 
 	CustomizeInfoScreen.Destroy();
 	CharacterGenerator.Destroy();
-	
+
 	/*
-		Every example I've seen of XComCharacterGenerators being
-		created seems to lack any kind of explicit cleanup for the
-		character generator.
+		I don't want to risk explicitly cleaning it up but
+		if it was *created* for me (somehow) I want it to
+		be garbage collected. According to this article,
+		setting the reference to none is how that's done.
+
+		https://wiki.beyondunreal.com/Legacy:Creating_Actors_And_Objects
 	*/
-	//Unit.Destroy();
+	Unit = none;
 
 	RandomButtonBG.Destroy();
 	RandomButtonTitle.Destroy();
@@ -202,7 +205,7 @@ simulated function InitUI()
 
 	RandomFirstnameButton	= CreateButton('randomFirstnameButton', FIRSTNAME_BUTTON_LABEL,	OnRandomFirstnameButtonPress,	AnchorPos, RNBConf_PanelXOffset, RNBConf_PanelYOffset);
 	RandomLastnameButton	= CreateButton('randomLastnameButton',	LASTNAME_BUTTON_LABEL,	OnRandomLastnameButtonPress,	AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomFirstnameButton));
-	
+
 	NicknameButtonLabelAndTooltip(strNicknameButtonLabel, strNicknameButtonTooltip);
 	RandomNicknameButton	= CreateButton('randomNicknameButton',	strNicknameButtonLabel,	OnRandomNicknameButtonPress,	AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomLastnameButton));
 	DisableNicknameButtonIfRequired(strNicknameButtonTooltip);
@@ -261,7 +264,7 @@ simulated function DisableNicknameButtonIfRequired(const out string strTooltip)
 	}
 }
 
-simulated function UIButton CreateButton(name nmName, string strLabel, delegate<OnClickedDelegate> OnClickCallThis, 
+simulated function UIButton CreateButton(name nmName, string strLabel, delegate<OnClickedDelegate> OnClickCallThis,
 										 int AnchorPos, int XOffset, int YOffset, optional int Width = -1)
 {
 	local UIButton	uiButton;
@@ -280,7 +283,7 @@ simulated function UIButton CreateButton(name nmName, string strLabel, delegate<
 
 	uiButton.SetPosition(XOffset, YOffset);
 	uiButton.SetText("<p align='LEFT'>" $ strLabel $ "</p>");
-	
+
 	return uiButton;
 }
 
@@ -288,18 +291,18 @@ simulated function OnRandomFirstnameButtonPress(UIButton Button)
 {
 	local string 					strNewFirstName;
 	local string					strNewLastName;
-	
+
 	local string 					strFirstName;
 	local string 					strNickName;
 	local string 					strLastName;
-	
+
 	strFirstName = Unit.GetFirstName();
 	strNickName = Unit.GetNickName();
-	strLastName = Unit.GetLastName();	
-	
+	strLastName = Unit.GetLastName();
+
 	strNewFirstName = "NEWNAME";
 	strNewLastName = "NEWLAST";		// have to catch it whether or not I use it.
-	
+
 	/*
 		XGCharacterGenerator class has member
 		GenerateName(int gender, name countryname, OUT string first, OUT string last, optional int race)
@@ -310,44 +313,44 @@ simulated function OnRandomFirstnameButtonPress(UIButton Button)
 		Need iGender, which is member of kAppearance, which is member of Unit.
 	*/
 	CharacterGenerator.GenerateName(Unit.kAppearance.iGender, Unit.GetCountry(), strNewFirstName, strNewLastName, Unit.kAppearance.iRace);
-	
+
 	Unit.SetUnitName(strNewFirstName, strLastName, strNickName);
-	UpdateCharacterBio(strFirstName, strNewFirstName);	
+	UpdateCharacterBio(strFirstName, strNewFirstName);
 	ForceCustomizationMenuRefresh();
 }
 
 simulated function OnRandomNicknameButtonPress(UIButton Button)
 {
-	local string 					strNewNickName;	
+	local string 					strNewNickName;
 	local string 					strFirstName;
 	local string 					strLastName;
-	
+
 	strFirstName = Unit.GetFirstName();
-	strLastName = Unit.GetLastName();	
-	
+	strLastName = Unit.GetLastName();
+
 	strNewNickName = Unit.GenerateNickname();
 	Unit.SetUnitName(strFirstName, strLastName, strNewNickName);
-	ForceCustomizationMenuRefresh();		
+	ForceCustomizationMenuRefresh();
 }
 
 simulated function OnRandomLastnameButtonPress(UIButton button)
 {
 	local string 					strNewFirstname;
 	local string					strNewLastname;
-	
+
 	local string 					strFirstname;
 	local string 					strNickname;
 	local string 					strLastname;
-	
+
 	strFirstName = Unit.GetFirstName();
 	strNickName = Unit.GetNickName();
-	strLastName = Unit.GetLastName();	
-	
+	strLastName = Unit.GetLastName();
+
 	strNewFirstName = "NEWNAME";	// have to catch it whether or not I use it.
 	strNewLastName	= "NEWLAST";
-	
+
 	/*
-		XGCharacterGenerator class has member 
+		XGCharacterGenerator class has member
 		GenerateName(int gender, name countryname, OUT string first, OUT string last, optional int race)
 		(the "out" keyword denotes pass-by-reference in UnrealScript).
 
@@ -357,7 +360,7 @@ simulated function OnRandomLastnameButtonPress(UIButton button)
 		by gender, e.g. countries like Iceland.
 	*/
 	CharacterGenerator.GenerateName(Unit.kAppearance.iGender, Unit.GetCountry(), strNewFirstname, strNewLastname, Unit.kAppearance.iRace);
-	
+
 	Unit.SetUnitName(strFirstname, strNewLastname, strNickname);
 
 	/*
@@ -444,7 +447,7 @@ simulated function UpdateCharacterBio(string oldName, string newName)
 		The old bio has a three line header: DOB, country of origin, and a blank line.
 		Shipping this as-is will result in a similar (but different) header being
 		stuck on top: we accumulate headers.
-		
+
 		Only way to avoid this is to cut off the top three lines prior to shipping.
 	*/
 
@@ -454,7 +457,7 @@ simulated function UpdateCharacterBio(string oldName, string newName)
 	oldBio = Split(oldBio, "\n", true);
 
 	newBio = Repl(oldBio, oldName, newName, true); // enforce case sensitivity
-	
+
 	Unit.GenerateBackground(newBio);
 }
 
@@ -462,7 +465,7 @@ simulated function UpdateCharacterBio(string oldName, string newName)
 simulated function ForceCustomizationMenuRefresh()
 {
 	`log("Forcing Customization Menu Screen to update (Random Nickname Button Mod).");
-	
+
 	/*
 		UICustomize has member UISoldierHeader Header.
 		UISoldierHeader derives from UIPanel.
