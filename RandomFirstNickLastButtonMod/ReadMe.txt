@@ -1,4 +1,6 @@
-﻿Have you ever known a soldier's nickname was wrong, but you couldn't think of the right one? This happens to me all the time in XCOM and I've really wanted a "Random Nickname" button all throughout EU/EW/LW. Well, now I got the chance to make one. Enjoy! 
+﻿THIS IS THE WOTC EDITION.
+
+Have you ever known a soldier's nickname was wrong, but you couldn't think of the right one? This happens to me all the time in XCOM and I've really wanted a "Random Nickname" button all throughout EU/EW/LW. Well, now I got the chance to make one. Enjoy! 
 
 This mod adds five buttons to the Character Info screen: 
 * Random First Name 
