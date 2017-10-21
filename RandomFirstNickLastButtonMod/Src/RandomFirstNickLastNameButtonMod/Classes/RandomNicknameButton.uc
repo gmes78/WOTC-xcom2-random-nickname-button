@@ -119,6 +119,8 @@ delegate OnClickedDelegate(UIButton Button);
 
 event OnInit(UIScreen Screen)
 {
+	BigLog("loading my stuff now mkay?");
+
 	CharacterGenerator	= `XCOMGAME.Spawn( class 'XGCharacterGenerator' );
 	CustomizeInfoScreen	= UICustomize_Info(Screen);
 	RefreshUnit();
@@ -199,6 +201,7 @@ simulated function InitUI()
 	local int						AnchorPos;
 	local string					strNicknameButtonLabel;		// for coloring, see NicknameButtonLabelAndTooltip()
 	local string					strNicknameButtonTooltip;
+	local string					strCountryButtonTooltip; 
 
 	//AnchorPos = class'UIUtilities'.const.ANCHOR_TOP_RIGHT;
 	AnchorPos = RNBConf_Anchor;
@@ -211,6 +214,9 @@ simulated function InitUI()
 	DisableNicknameButtonIfRequired(strNicknameButtonTooltip);
 
 	RandomCountryButton		= CreateButton('randomCountryButton',	COUNTRY_BUTTON_LABEL,	OnRandomCountryButtonPress,		AnchorPos, RandomFirstnameButton.X,	ButtonVertOffsetFrom(RandomNicknameButton));
+	strCountryButtonTooltip = "No nation for this soldier.";
+	DisableCountryButtonIfRequired(strCountryButtonTooltip);
+
 	RandomBioButton			= CreateButton('randomBiographyButton', BIO_BUTTON_LABEL,		OnRandomBioButtonPress,			AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomCountryButton));
 }
 
@@ -261,6 +267,20 @@ simulated function DisableNicknameButtonIfRequired(const out string strTooltip)
 	if (Unit.bIsSuperSoldier || (!Unit.IsVeteran() && !InShell()) || (Unit.GetSoldierClassTemplateName() == 'Rookie'))
 	{
 		RandomNickNameButton.SetDisabled(true, strTooltip);
+	}
+}
+
+simulated function DisableCountryButtonIfRequired(const out string strTooltip)
+{
+	/*
+		The XPAC soldiers don't have nations. Clicking the button freezes the game.
+
+		Also, apparently Super Soldiers don't either, as Nationality is disabled
+		for them also under UICustomize_Info, so I'm following suit here.
+	*/
+	if (Unit.bIsSuperSoldier || Unit.IsChampionClass())
+	{
+		RandomCountryButton.SetDisabled(true, strTooltip);
 	}
 }
 
@@ -395,6 +415,8 @@ simulated function OnRandomCountryButtonPress(UIButton Button)
 		I can't check it for corruption, but hopefully that's not the issue.
 
 		(If it is, I can't do anything about this.)
+
+		NOTE. TODO. Disable when Unit.IsChampionClass() a la nickname button
 	*/
 
 	if (Unit.GetCountryTemplate() != none)
