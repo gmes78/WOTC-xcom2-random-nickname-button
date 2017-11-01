@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # XCOM ModBuddy Solution File, Format Version 11.00
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "RandomFirstNickLastButtonMod", "RandomFirstNickLastButtonMod\RandomFirstNickLastButtonMod.x2proj", "{7340BD92-EA61-405F-ADBE-AB7B863ACF54}"
+Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "WOTCRandomSoldierInfoMod", "WOTCRandomSoldierInfoMod\WOTCRandomSoldierInfoMod.x2proj", "{7340BD92-EA61-405F-ADBE-AB7B863ACF54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

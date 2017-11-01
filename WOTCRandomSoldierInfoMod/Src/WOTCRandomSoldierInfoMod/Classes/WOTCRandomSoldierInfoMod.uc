@@ -57,8 +57,8 @@
 
 */
 
-class RandomNicknameButton extends UIScreenListener
-	config(RandomFirstNickLastNameButtonMod);
+class WOTCRandomSoldierInfoMod extends UIScreenListener
+	config(WOTCRandomSoldierInfoMod);
 
 var config int					RNBConf_PanelXOffset;
 var config int					RNBConf_PanelYOffset;
@@ -415,8 +415,6 @@ simulated function OnRandomCountryButtonPress(UIButton Button)
 		I can't check it for corruption, but hopefully that's not the issue.
 
 		(If it is, I can't do anything about this.)
-
-		NOTE. TODO. Disable when Unit.IsChampionClass() a la nickname button
 	*/
 
 	if (Unit.GetCountryTemplate() != none)
