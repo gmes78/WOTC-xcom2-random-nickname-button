@@ -18,7 +18,7 @@
     <Folder Include="Src\WOTCRandomSoldierInfoMod\Classes\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config\XComWOTCRandomSoldierInfoMod.ini">
+    <Content Include="Config\XComRandomSoldierInfoButtonPanel.ini">
       <SubType>Content</SubType>
     </Content>
     <Content Include="ReadMe.txt" />
@@ -27,7 +27,13 @@
     <Content Include="Config\XComEngine.ini" />
     <Content Include="Config\XComGame.ini" />
     <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\WOTCRandomSoldierInfoMod\Classes\RandomSoldierInfoButtonPanel.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\WOTCRandomSoldierInfoMod\Classes\WOTCRandomSoldierInfoMod.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTCRandomSoldierInfoMod\Classes\WOTCRandomSoldierInfoMod_Templar.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

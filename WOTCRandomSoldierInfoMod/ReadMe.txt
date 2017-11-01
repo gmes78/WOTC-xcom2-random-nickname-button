@@ -25,10 +25,12 @@ If a soldier doesn't have a class, they can't get a nickname from the built-in g
 
 "Your mod doesn't work with [mod]!" 
 
-Let me know! I'm happy to look and see if there's anything I can do; recently some of the mods I've seen incompatibilities with are due to the fact that the other modder is instantiating their own Customization menu which seems to be confusing to my mod (which is only a Listener). If there's a way for me to mitigate that on my end, I don't know it yet; I'm sorry. :( Encourage other modders to use Listeners or GameState_BaseObjects if you can: I *think* that will allow more mods to play together. I dunno for sure though; I'm very new here. 
+Most incompatibilities are due to the other modder is instantiating their own Customization menu rather than extending the existing one. Their custom menu will have a different (arbitrary) name that mine won't be able to pick up on. If you *really* want to, you can fork my project and have it extend your favorite mod's main class and it might just work. (Buyer beware.)
 
 KNOWN BUGS AND ISSUES. 
 
 The default override for soldier stance is lost upon clicking one of my buttons (i.e. they'll resume acting wounded if they are wounded). (No workaround.) 
 
-The Random Bio button's label isn't left justified correctly along with the others. This should be the easiest one to fix...but it's not, haha. I'll get to it eventually. (Workaround: grimace slightly and shake your head, as I do.)
+The Random Bio button's label isn't left justified correctly along with the others. This should be the easiest one to fix...but it's not. (Workaround: grimace slightly and shake your head, as I do.)
+
+It doesn't work with SPARK soldiers. This is on my todo list. Still.
