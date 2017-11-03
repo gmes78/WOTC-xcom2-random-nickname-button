@@ -1,16 +1,16 @@
 
 /*
-	Listener for Templar support.
+	Listener for SPARK support.
 */
 
-class WOTCRandomSoldierInfoMod_Templar extends UIScreenListener
+class WOTCRandomSoldierInfoMod_SPARK extends UIScreenListener
 	config(WOTCRandomSoldierInfoMod);
 
 var RandomSoldierInfoButtonPanel buttonPanel;
 
 event OnInit(UIScreen Screen)
 {
-	class'RandomSoldierInfoButtonPanel'.static.BigLog("Loading WOTCRandomSoldierInfoMod_Templar.");
+	class'RandomSoldierInfoButtonPanel'.static.BigLog("Loading WOTCRandomSoldierInfoMod_SPARK.");
 
 	buttonPanel = New class'RandomSoldierInfoButtonPanel';
 	buttonPanel.InitPanel(Screen);
@@ -36,5 +36,6 @@ event OnRemoved(UIScreen Screen)
 
 defaultproperties
 {
-	ScreenClass = class'UICustomize_TemplarInfo';
+	ScreenClass = class'UICustomize_SparkInfo';
 }
+

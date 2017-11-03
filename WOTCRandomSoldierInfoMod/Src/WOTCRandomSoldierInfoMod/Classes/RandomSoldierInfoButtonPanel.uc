@@ -1,5 +1,11 @@
 /*
-	Panel used by the ScreenListeners
+	Panel used by the ScreenListeners.
+
+	Originally this was the core class, but in order to catch all
+	non-standard classes (which tend to be subclasses or screen
+	listeners of UICustomize_Info) and not duplicate code, I
+	pulled out the common code here and created tiny listeners
+	for each subclass/parent-listener.
 */
 
 class RandomSoldierInfoButtonPanel extends Object
@@ -76,9 +82,20 @@ simulated function InitPanel(UIScreen Screen)
 		BigLog("isA UICustomize_TemplarInfo screen.");
 		CustomizeInfoScreen	= UICustomize_TemplarInfo(Screen);
 	}
+	else if (Screen.isA('UICustomize_SparkInfo'))
+	{
+		BigLog("isA UICustomize_SparkInfo screen.");
+		CustomizeInfoScreen = UICustomize_SparkInfo(Screen);
+	}
 	else if (Screen.isA('UICustomize_Info'))
 	{
-		BigLog("isA UICustomize_Info screen.");
+		/*
+			Order is important here: UICustmize_[TYPE]Info classes
+			are listeners or subclasses of UICustomize_Info, so
+			if we check for UICustomize_Info first, it will always
+			test true for Sparks, Templars, etc.
+		*/
+		BigLog("isA UICustomize_Info screen, not otherwise specified.");
 		CustomizeInfoScreen	= UICustomize_Info(Screen);	
 	}
 	else
@@ -170,13 +187,18 @@ simulated function InitUI()
 {
 	local int						AnchorPos;
 	local string					strNicknameButtonLabel;		// for coloring, see NicknameButtonLabelAndTooltip()
+	local string 					strFirstNameButtonTooltip;
 	local string					strNicknameButtonTooltip;
-	local string					strCountryButtonTooltip; 
+	local string					strCountryButtonTooltip;
+	local string 					strBioButtonTooltip;
 
-	//AnchorPos = class'UIUtilities'.const.ANCHOR_TOP_RIGHT;
+	//AnchorPos = class'UIUtilities'.const.ANCHOR_TOP_RIGHT;	// Left here so I remember what I like the default to be.
 	AnchorPos = RNBConf_Anchor;
 
 	RandomFirstnameButton	= CreateButton('randomFirstnameButton', FIRSTNAME_BUTTON_LABEL,	OnRandomFirstnameButtonPress,	AnchorPos, RNBConf_PanelXOffset, RNBConf_PanelYOffset);
+	strFirstNameButtonTooltip = "Not for this soldier.";
+	DisableFirstNameButtonIfRequired(strFirstNameButtonTooltip);
+
 	RandomLastnameButton	= CreateButton('randomLastnameButton',	LASTNAME_BUTTON_LABEL,	OnRandomLastnameButtonPress,	AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomFirstnameButton));
 
 	NicknameButtonLabelAndTooltip(strNicknameButtonLabel, strNicknameButtonTooltip);
@@ -188,6 +210,8 @@ simulated function InitUI()
 	DisableCountryButtonIfRequired(strCountryButtonTooltip);
 
 	RandomBioButton			= CreateButton('randomBiographyButton', BIO_BUTTON_LABEL,		OnRandomBioButtonPress,			AnchorPos, RandomFirstnameButton.X, ButtonVertOffsetFrom(RandomCountryButton));
+	strBioButtonTooltip = "Not for this soldier.";
+	DisableBioButtonIfRequired(strBioButtonTooltip);
 }
 
 simulated function int ButtonVertOffsetFrom(const out UIButton uiButton)
@@ -212,6 +236,18 @@ simulated function NicknameButtonLabelAndTooltip(out string strLabel, out string
 	} else {
 		strLabel	= class'UIUtilities_Text'.static.GetColoredText(NICKNAME_BUTTON_LABEL, eUIState_Normal);
 		// No tooltip for default case
+	}
+}
+
+simulated function DisableFirstNameButtonIfRequired(const out string strTooltip)
+{
+	/*
+		Generating a first name for a SPARK unit will lock up the game.
+	*/
+
+	if (Unit.GetMyTemplateName() == 'SparkSoldier')
+	{
+		RandomFirstnameButton.SetDisabled(true, strTooltip);
 	}
 }
 
@@ -248,9 +284,22 @@ simulated function DisableCountryButtonIfRequired(const out string strTooltip)
 		Also, apparently Super Soldiers don't either, as Nationality is disabled
 		for them also under UICustomize_Info, so I'm following suit here.
 	*/
-	if (Unit.bIsSuperSoldier || Unit.IsChampionClass())
+	if (Unit.bIsSuperSoldier || Unit.IsChampionClass() || Unit.GetMyTemplateName() == 'SparkSoldier')
 	{
 		RandomCountryButton.SetDisabled(true, strTooltip);
+	}
+}
+
+simulated function DisableBioButtonIfRequired(const out string strTooltip)
+{
+	/*
+		SPARKs don't get bios via autogen, so while clicking this is harmless it's
+		also useless.
+	*/
+
+	if (Unit.GetMyTemplateName() == 'SparkSoldier')
+	{
+		RandomBioButton.SetDisabled(true, strTooltip);
 	}
 }
 
