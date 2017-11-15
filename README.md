@@ -2,5 +2,7 @@ This is the WOTC edition of my XCOM 2 mod that adds a panel of five buttons to t
 
 There's a config file that allows the user to reposition the button panel if they choose, and rather verbose instructions on just how that works.
 
+It supports all of the new classes as well as SPARKs but as a result requries the associated DLC for both.
+
 It's on Steam Workshop here:
-(not yet on the workshop)
+http://steamcommunity.com/sharedfiles/filedetails/?id=1188012104
