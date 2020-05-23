@@ -85,7 +85,7 @@ simulated function InitPanel(UIScreen Screen)
 	else if (Screen.isA('UICustomize_SparkInfo'))
 	{
 		BigLog("isA UICustomize_SparkInfo screen.");
-		CustomizeInfoScreen = UICustomize_SparkInfo(Screen);
+		CustomizeInfoScreen = none;
 	}
 	else if (Screen.isA('UICustomize_Info'))
 	{

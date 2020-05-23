@@ -33,9 +33,6 @@
     <Content Include="Src\WOTCRandomSoldierInfoMod\Classes\WOTCRandomSoldierInfoMod.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\WOTCRandomSoldierInfoMod\Classes\WOTCRandomSoldierInfoMod_SPARK.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\WOTCRandomSoldierInfoMod\Classes\WOTCRandomSoldierInfoMod_Templar.uc">
       <SubType>Content</SubType>
     </Content>
