@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>293a8fa7-20ba-4ec7-90fd-9a8fcb0be813</Guid>
+    <Name>Random Soldier Info Mod (WoTC, No Shen's Last Gift)</Name>
+    <Description>This is a version of Thades' Random Soldier Info mod that doesn't require the Shen's Last Gift DLC.
+WoTC is still required.
+
+For more details, see the original mod's description here:
+http://steamcommunity.com/sharedfiles/filedetails/?id=1188012104
+
+This fork's source code is located at https://github.com/gmes78/WOTC-xcom2-random-nickname-button
+
+tags= UI, Soldier Customization</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>Random Soldier Info Mod (WoTC, No Shen's Last Gift)</AssemblyName>
+    <RootNamespace>Random Soldier Info Mod (WoTC, No Shen's Last Gift)</RootNamespace>
+    <ProjectGuid>{5c0828ac-d508-4058-80df-f6835fbe3986}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\RandomSoldierInfoMod(WoTC,NoShen'sLastGift)\" />
+    <Folder Include="Src\RandomSoldierInfoMod(WoTC,NoShen'sLastGift)\Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\XComRandomSoldierInfoButtonPanel.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\RandomSoldierInfoMod(WoTC,NoShen'sLastGift)\Classes\RandomSoldierInfoButtonPanel.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\RandomSoldierInfoMod(WoTC,NoShen'sLastGift)\Classes\WOTCRandomSoldierInfoMod.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\RandomSoldierInfoMod(WoTC,NoShen'sLastGift)\Classes\WOTCRandomSoldierInfoMod_Templar.uc">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>
